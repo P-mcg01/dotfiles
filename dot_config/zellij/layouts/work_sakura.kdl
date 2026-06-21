@@ -1,5 +1,5 @@
 layout {
-  tab name="base" focus=true {
+  tab name="zellij" focus=true {
     pane
   }
 
@@ -7,7 +7,7 @@ layout {
     pane size=1 borderless=true {
       plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
         format_left   "{mode} #[fg=#c5a3a9,bold]{tabs}"  // Light pink for main text
-        format_center "#[fg=#c5a3a9,bold]{session}"
+        format_center "#[fg=#c5a3a9,bold]"
         format_right  "{command_git_branch} {datetime}"
         format_space  ""
 
@@ -28,8 +28,8 @@ layout {
         command_git_branch_rendermode  "static"
 
         datetime        "#[fg=#786577,bold] {format} "  // Dark gray for date and time
-        datetime_format "%A, %d %b %Y %H:%M"
-        datetime_timezone "Europe/Berlin"
+        datetime_format "%A, %d %b %Y"
+        datetime_timezone "America/La_Paz"
       }
     }
     children
