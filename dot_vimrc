@@ -41,10 +41,10 @@ if 0 | endif
 " Note: You don't set neobundle setting in .gvimrc!
 NeoBundle 'preservim/nerdtree'
 NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
 NeoBundle 'jiangmiao/auto-pairs'
-NeoBundle 'catppuccin/vim', { 'as': 'catppuccin' }
+NeoBundle 'haishanh/night-owl.vim'
 NeoBundle 'ekalinin/Dockerfile.vim'
-"NeoBundle 'ryanoasis/vim-filetype-icons'
 NeoBundle 'ryanoasis/vim-devicons'
 
 call neobundle#end()
@@ -56,10 +56,12 @@ filetype plugin indent on
 " this will conveniently prompt you to install them.
 NeoBundleCheck
 
-colorscheme catppuccin_mocha
+"colorscheme catppuccin_mocha
+colorscheme night-owl
 
 " Vim-Airline
-let g:airline_theme = 'catppuccin_mocha'
+let g:airline_theme = 'transparent'
+let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 
 " NerdTree
