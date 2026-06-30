@@ -131,6 +131,7 @@ alias lt='ls --tree'
 # Export variables
 export PATH=$PATH:$HOME/.opencode/bin:$HOME/.local/bin
 export LIBVIRT_DEFAULT_URI="qemu:///system"
+export GEMINI_API_KEY="{{ (bitwarden "item" "GEMINI API").notes }}"
 
 #eval "$(zellij setup --generate-auto-start zsh)"
 eval "$("$HOME/.local/bin/mise" activate zsh)"
