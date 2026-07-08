@@ -2,6 +2,12 @@
   name = P-mcg01
   email = pablo.cg0806@gmail.com
   signingkey = {{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub
+[gpg]
+  format = ssh
+[commit]
+  gpgsign = true
+[tag]
+  gpgsign = true
 [init]
   defaultBranch = main
 [credential "https://github.com"]
@@ -10,9 +16,17 @@
 [credential "https://gist.github.com"]
   helper = 
   helper = !/usr/bin/gh auth git-credential
-[gpg]
-  format = ssh
-[commit]
-  gpgsign = true
-[tag]
-  gpgsign = true
+[pull]
+  rebase = true
+[rebase]
+  autoStash = true
+  updateRefs = true
+[push]
+  default = current
+  autoSetupRemote = true
+  followTags = true
+[fetch]
+  prune = true
+  pruneTags = true
+[merge]
+  conflictStyle = zdiff3
