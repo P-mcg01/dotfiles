@@ -75,8 +75,6 @@ plugins=(
   zsh-autopair
   fast-syntax-highlighting
   zsh-autosuggestions
-  #argocd
-  #helm
   kubectl
   aws
   chezmoi
@@ -88,8 +86,11 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 ####
 
+# zsh fast-syntax-highlighting
 fast-theme XDG:catppuccin-mocha > /dev/null
-#fast-theme XDG:default > /dev/null
+
+# zsh autosuggestions
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=4'
 
 # export MANPATH="/usr/local/man:$MANPATH"
 #export PATH=$PATH:/usr/sbin/:/usr/local/go/bin
