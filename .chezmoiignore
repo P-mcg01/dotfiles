@@ -1,2 +1,10 @@
+# Repository documentation files
 /README.md
 /LICENSE
+
+# Files used only for repository development
+# These should not be deployed to the user's HOME directory
+/.pre-commit-config.yaml
+/mise.toml
+
+# vim: ft=gitignore

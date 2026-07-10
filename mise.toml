@@ -1,0 +1,3 @@
+[tools]
+pre-commit = "4.6.0"
+gitleaks = "8.30.1"
