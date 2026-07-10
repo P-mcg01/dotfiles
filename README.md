@@ -9,6 +9,7 @@ Built on Fedora Linux with Hyprland, Kitty, and Zsh.
 ![Kitty](https://img.shields.io/badge/Kitty-000000?style=for-the-badge&logo=gnubash&logoColor=white)
 ![Zsh](https://img.shields.io/badge/Zsh-F15A24?style=for-the-badge&logo=zsh&logoColor=white)
 ![Wayland](https://img.shields.io/badge/Wayland-FFBC00?style=for-the-badge&logo=wayland&logoColor=black)
+![Protected by Gitleaks](https://img.shields.io/badge/Protected%20by-Gitleaks-blue?style=for-the-badge)
 
 ## Overview
 
