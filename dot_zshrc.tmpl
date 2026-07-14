@@ -63,11 +63,12 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 # Example format: plugins=(rails git textmate ruby lighthouse zsh-syntax-highlighting)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git
+  transient-prompt
   zsh-autopair
-  fast-syntax-highlighting
   zsh-autosuggestions
+  fast-syntax-highlighting
   kubectl
+  git
   aws
   chezmoi
 )
@@ -125,4 +126,8 @@ export GEMINI_API_KEY="{{ (bitwarden "item" "GEMINI API").notes }}"
 
 #eval "$(zellij setup --generate-auto-start zsh)"
 eval "$("$HOME/.local/bin/mise" activate zsh)"
+
+# starship
 eval "$(starship init zsh)"
+TRANSIENT_PROMPT_PROMPT='$(starship prompt --terminal-width="$COLUMNS" --keymap="${KEYMAP:-}" --status="$STARSHIP_CMD_STATUS" --pipestatus="${STARSHIP_PIPE_STATUS[*]}" --cmd-duration="${STARSHIP_DURATION:-}" --jobs="$STARSHIP_JOBS_COUNT")'
+TRANSIENT_PROMPT_TRANSIENT_PROMPT='%F{yellow} %f'
