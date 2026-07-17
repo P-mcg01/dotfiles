@@ -7,4 +7,7 @@
 /.pre-commit-config.yaml
 /mise.toml
 
+# Secret manager
+doppler.yaml
+
 # vim: ft=gitignore
