@@ -1,6 +1,6 @@
 name: Bug
 description: Something stopped working or isn't behaving as expected
-title: ""
+title: "[BUG] "
 body:
   - type: textarea
     id: symptom

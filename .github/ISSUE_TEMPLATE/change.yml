@@ -1,6 +1,6 @@
 name: Change
 description: Intentional work — new config, integration, or improvement to the dotfiles
-title: ""
+title: "[CHANGE] "
 body:
   - type: textarea
     id: goal
