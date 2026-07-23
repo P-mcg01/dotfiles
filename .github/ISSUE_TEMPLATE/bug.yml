@@ -1,0 +1,61 @@
+name: Bug
+description: Something stopped working or isn't behaving as expected
+title: ""
+body:
+  - type: textarea
+    id: symptom
+    attributes:
+      label: Symptom
+      description: What's happening.
+      placeholder: e.g. Starship prompt doesn't show git status on the work laptop.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: Host / OS
+      description: Which machine(s) this shows up on. Useful since chezmoi spans multiple hosts.
+      placeholder: e.g. fedora, debian, arch
+    validations:
+      required: false
+  - type: textarea
+    id: root_cause
+    attributes:
+      label: Root cause
+      description: >-
+        Fill this in once diagnosed, not necessarily up front. The point is to record the actual cause, not just the symptom, so future me doesn't repeat the same mistake.
+    validations:
+      required: false
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: false
+  - type: textarea
+    id: done
+    attributes:
+      label: How I'll know it's fixed
+      placeholder: e.g. Git status shows up in the prompt on both hosts after chezmoi apply.
+    validations:
+      required: false

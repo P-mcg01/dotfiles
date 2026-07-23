@@ -1,0 +1,67 @@
+name: Change
+description: Intentional work — new config, integration, or improvement to the dotfiles
+title: ""
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What do I want to achieve and why.
+      placeholder: e.g. Add fzf integration to the shell for fuzzy file/history search.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What's motivating this. Optional.
+      placeholder: e.g. Saw it in someone else's dotfiles, tired of ctrl+r not being fuzzy.
+    validations:
+      required: false
+  - type: textarea
+    id: decision
+    attributes:
+      label: Decision / Approach
+      description: >-
+        Key choices and alternatives considered — write down *why* this option and not another one.
+      placeholder: |
+        e.g. Chose fzf over skim because X. Considered plugin manager Y but decided to vendor it instead because Z.
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      description: Checklist of concrete steps.
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: How I'll know it's done
+      description: What I should be able to check/observe once this is finished.
+      placeholder: |
+        - File search works with ctrl+t
+        - History search works with ctrl+r
+        - README updated
+    validations:
+      required: true
+  - type: input
+    id: paths
+    attributes:
+      label: Affected paths
+      description: Relevant dot_* files or chezmoi templates touched by this change. Optional.
+      placeholder: e.g. dot_config/fish/config.fish.tmpl, dot_config/fzf/
+    validations:
+      required: false
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback
+      description: How to revert this if it breaks something. Optional.
+      placeholder: e.g. chezmoi apply from commit <sha>, or comment out the fzf source line in config.fish.
+    validations:
+      required: false
