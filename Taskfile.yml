@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+dotenv:
+  - .env
+tasks:
+  build:*:
+    desc: "Build local image for distribution {{.DISTRO}}"
+    dir: tests/containers
+    vars:
+      DISTRO: '{{index .MATCH 0}}'
+      USER_UID:
+        sh: id -u
+      USER_GID:
+        sh: id -g
+    cmds:
+      - |
+        podman build \
+        -t dotfiles-{{.DISTRO}}:dev \
+        -f {{.DISTRO}} \
+        --build-arg USERNAME={{.USER}} \
+        --build-arg USER_UID={{.USER_UID}} \
+        --build-arg USER_GID={{.USER_GID}} \
+        .
+  run:*:
+    desc: "Run interactive container for distribution {{.DISTRO}}"
+    vars:
+      DISTRO: '{{index .MATCH 0}}'
+      TAG: '{{.TAG | default "latest" }}'
+      IMAGE: >-
+        {{if eq .TAG "latest"}}ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:latest{{else}}dotfiles-{{.DISTRO}}:{{.TAG}}{{end}}
+    cmds:
+      - |
+        podman run -it --rm \
+        -e DOPPLER_TOKEN \
+        -v "{{.PWD}}:/home/{{.USER}}/.local/share/chezmoi:Z" \
+        --hostname dotfiles-{{.DISTRO}} \
+        {{.IMAGE}}

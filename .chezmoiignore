@@ -1,13 +1,21 @@
+#
 # Repository documentation files
+#
 /README.md
 /LICENSE
 /CHANGELOG.md
 cliff.toml
 
+#
 # Files used only for repository development
 # These should not be deployed to the user's HOME directory
+#
 /.pre-commit-config.yaml
 /mise.toml
+
+# Environment variables
+.env
+.env.example
 
 # Secret manager
 doppler.yaml
