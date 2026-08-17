@@ -1,37 +1,115 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
-version: '3'
+version: "3"
+
 dotenv:
   - .env
+
 tasks:
+  #
+  # Containers
+  #
   build:*:
     desc: "Build local image for distribution {{.DISTRO}}"
-    dir: tests/containers
+    dir: validation/containers
     vars:
-      DISTRO: '{{index .MATCH 0}}'
-      USER_UID:
-        sh: id -u
-      USER_GID:
-        sh: id -g
+      DISTRO: "{{index .MATCH 0}}"
     cmds:
       - |
         podman build \
         -t dotfiles-{{.DISTRO}}:dev \
         -f {{.DISTRO}} \
         --build-arg USERNAME={{.USER}} \
-        --build-arg USER_UID={{.USER_UID}} \
-        --build-arg USER_GID={{.USER_GID}} \
         .
+
   run:*:
     desc: "Run interactive container for distribution {{.DISTRO}}"
     vars:
-      DISTRO: '{{index .MATCH 0}}'
+      DISTRO: "{{index .MATCH 0}}"
       TAG: '{{.TAG | default "latest" }}'
       IMAGE: >-
         {{if eq .TAG "latest"}}ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:latest{{else}}dotfiles-{{.DISTRO}}:{{.TAG}}{{end}}
     cmds:
       - |
         podman run -it --rm \
+        --userns=keep-id \
         -e DOPPLER_TOKEN \
-        -v "{{.PWD}}:/home/{{.USER}}/.local/share/chezmoi:Z" \
+        -v "{{.PWD}}:/home/tux/.local/share/chezmoi:Z" \
         --hostname dotfiles-{{.DISTRO}} \
         {{.IMAGE}}
+
+  #
+  # Development
+  #
+  setup:
+    desc: "Prepare the local development environment"
+    cmds:
+      - task: install
+      - pre-commit install
+      - doppler setup
+  install:
+    desc: "Install pinned development tools"
+    cmds:
+      - mise install
+  show-tools:
+    desc: "Show active tool versions"
+    cmds:
+      - mise current
+
+  #
+  # Bash
+  #
+  fmt:
+    desc: "Format bash scripts with shfmt"
+    cmds:
+      - shfmt -w scripts/
+  fmt-check:
+    desc: "Check bash scripts formatting with shfmt"
+    cmds:
+      - shfmt -d scripts/
+  lint:
+    desc: "Lint bash scripts with shellcheck"
+    cmds:
+      - find scripts -type f -name '*.sh' -exec shellcheck {} +
+  test:
+    desc: "Run shellspec tests"
+    cmds:
+      - shellspec
+  test-check:
+    desc: "Check shellspec specs without running them"
+    cmds:
+      - shellspec --syntax-check
+  test-list:
+    desc: "List shellspec specs and examples"
+    cmds:
+      - shellspec --list specfiles
+      - shellspec --list examples
+  test-count:
+    desc: "Count shellspec specfiles and examples"
+    cmds:
+      - shellspec --count
+  test-coverage:
+    desc: "Run shellspec tests with kcov coverage"
+    cmds:
+      - shellspec --kcov
+  test-coverage-clean:
+    desc: "Run shellspec tests with fresh kcov coverage report"
+    cmds:
+      - rm -rf coverage
+      - shellspec --kcov
+  #
+  # GitHub Actions
+  #
+  actions-fmt:
+    desc: "Format github actions workflows with yamlfmt"
+    cmds:
+      - yamlfmt .github/workflows/
+
+  actions-fmt-check:
+    desc: "Check github actions workflow formatting with yamlfmt"
+    cmds:
+      - yamlfmt -lint .github/workflows/
+
+  actions-lint:
+    desc: "Lint github actions workflows with actionlint"
+    cmds:
+      - actionlint
