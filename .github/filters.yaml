@@ -1,0 +1,4 @@
+debian:
+  - validation/containers/debian
+fedora:
+  - validation/containers/fedora
