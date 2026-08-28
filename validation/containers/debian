@@ -1,38 +1,33 @@
-FROM debian:13
+FROM debian:trixie
 
 ARG USERNAME=tux
 ARG USER_UID=1000
 ARG USER_GID=1000
+ARG CHEZMOI_VERSION=2.71.1
 
 ENV TZ=America/La_Paz
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
-
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-  git-core \
-  zsh \
-  ca-certificates \
-  apt-transport-https \
-  curl \
-  gnupg \
-  sudo \
-  && mkdir -p /usr/share/keyrings \
-  && curl -sLf --retry 3 --tlsv1.2 --proto "=https" \
-  https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key \
-  | gpg --dearmor -o /usr/share/keyrings/doppler-archive-keyring.gpg \
-  && echo "deb [signed-by=/usr/share/keyrings/doppler-archive-keyring.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" \
-  > /etc/apt/sources.list.d/doppler-cli.list \
-  && apt-get update \
-  && apt-get install -y doppler
-RUN sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+    && apt-get install -y --no-install-recommends \
+    git-core \
+    curl \
+    zsh \
+    ca-certificates \
+    apt-transport-https \
+    sudo
+RUN curl -fsSL \
+    "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" \
+    | tar -xz -C /usr/local/bin chezmoi \
+    && chezmoi --version
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -G sudo -s /bin/zsh \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' \
     > /etc/sudoers.d/sudo-nopasswd \
-    && chmod 0440 /etc/sudoers.d/sudo-nopasswd
+    && chmod 0440 /etc/sudoers.d/sudo-nopasswd \
+    && mkdir -p /home/$USERNAME/.local/share/chezmoi \
+    && chown -R $USERNAME:$USERNAME /home/$USERNAME/.local
 
 USER $USERNAME
-COPY config/chezmoi.yaml /home/$USERNAME/.config/chezmoi/chezmoi.yaml
 WORKDIR /home/$USERNAME/.local/share/chezmoi
 
 CMD ["/bin/zsh", "--login"]

@@ -22,7 +22,7 @@ Required loop before considering any GitHub Actions change done — in this orde
 - `scripts/` — bash scripts
 - `spec/` — ShellSpec tests mirroring `scripts/`
 - `home/` — chezmoi source state
-- `doppler.yaml` / `.env.example` — secrets management (Doppler); `.env.example` only holds a token placeholder, never a real secret
+- `.env.example` — secrets management (Doppler); `.env.example` only holds a token placeholder, never a real secret
 - `mise.toml` — pinned tool versions
 - `Taskfile.yml` — source of truth for dev tasks (format/lint/test)
 - `validation/` — ephemeral container/VM environments used to test dotfiles; out of scope unless explicitly requested
