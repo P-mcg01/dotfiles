@@ -19,7 +19,8 @@ Required loop before considering any GitHub Actions change done — in this orde
 
 ## File map
 
-- `scripts/` — bash scripts
+- `scripts/lib/` — reusable shell libraries and functions
+- `scripts/setup/` — installation and provisioning scripts
 - `spec/` — ShellSpec tests mirroring `scripts/`
 - `home/` — chezmoi source state
 - `.env.example` — secrets management (Doppler); `.env.example` only holds a token placeholder, never a real secret
