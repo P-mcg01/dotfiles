@@ -2,10 +2,15 @@
 
 # @brief Prints an error message to stderr.
 #
-# @param $@ Message error to print.
+# @param $@ Error message to print. At least one argument is required.
 # @return 1 Always.
 fail() {
-  printf 'Error: %s\n' "$*" >&2
+  if (($# == 0)); then
+    printf 'fail() requires a message\n' >&2
+    return 1
+  fi
+
+  printf '%s\n' "$*" >&2
   return 1
 }
 
@@ -20,11 +25,18 @@ die() {
 # @brief Checks that all required commands are available.
 #
 # @param $@ required_command Commands to check.
+# At least one command is required.
 #
 # @return 0 If all commands are available.
-# @return 1 If any command is not found.
+# @return 1 1 If no commands are specified or
+# any required command is not found.
 require_command() {
   local required_command
+
+  if (($# == 0)); then
+    fail "at least one command is required"
+    return 1
+  fi
 
   for required_command in "$@"; do
     if ! command -v "$required_command" >/dev/null 2>&1; then
@@ -36,16 +48,19 @@ require_command() {
 
 # @brief Detects the Linux distribution from /etc/os-release.
 #
+# @param $1 os_release_file Path to os-release file (default: /etc/os-release)
 # @return 0 On success.
 # @return 1 If the distribution cannot be detected.
 get_os_release() {
-  if [[ ! -r "/etc/os-release" ]]; then
-    fail "cannot detect the Linux distribution."
+  local os_release_file="${1:-/etc/os-release}"
+
+  if [[ ! -r "$os_release_file" ]]; then
+    fail "os-release file is not readable: $os_release_file"
     return 1
   fi
 
-  # shellcheck disable=SC1091
-  source /etc/os-release
+  # shellcheck disable=SC1090
+  source "$os_release_file"
 
   if [[ -z "${ID:-}" ]]; then
     fail "cannot detect the Linux distribution."
@@ -57,12 +72,11 @@ get_os_release() {
 
 # @brief Maps the system architecture to a supported architecture name.
 #
+# @param $1 arch Architecture string (default: output of uname -m)
 # @return 0 On success.
 # @return 1 If the architecture is unsupported.
 get_architecture() {
-  local architecture
-
-  architecture="$(uname -m)"
+  local architecture="${1:-$(uname -m)}"
 
   case "$architecture" in
   x86_64)
@@ -84,22 +98,32 @@ get_architecture() {
   esac
 }
 
+# @brief Returns whether the current user is root.
+#
+# @return 0 If the current user is root.
+# @return 1 Otherwise.
+is_root() {
+  ((EUID == 0))
+}
+
 # @brief Runs a command with root privileges.
 #
-# @param $@ command Command and arguments to execute.
+# @param $@ Command and arguments to execute.
 #
 # @return 0 If the command succeeds.
-# @return non-zero If the command fails or sudo is unavailable.
+# @return non-zero If the command fails, sudo is unavailable,
+#         or the script is already running as root.
 run_as_root() {
   (($# > 0)) || {
     fail "run_as_root requires a command."
     return 1
   }
 
-  if ((EUID == 0)); then
-    "$@"
-  else
-    require_command sudo || return 1
-    sudo "$@"
-  fi
+  is_root && {
+    fail "run_as_root must not be called as root."
+    return 1
+  }
+
+  require_command sudo || return 1
+  sudo "$@"
 }

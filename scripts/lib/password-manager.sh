@@ -3,18 +3,6 @@
 # shellcheck disable=SC1091
 source "$(dirname -- "${BASH_SOURCE[0]}")/common.sh"
 
-# @brief Removes the temporary directory if it exists.
-#
-# @param $1 temporary_directory Path of the temporary directory to remove.
-# @warning Recursively removes the directory and its contents.
-password_manager_cleanup() {
-  local temporary_directory="${1:-}"
-
-  if [[ -n "$temporary_directory" && -d "$temporary_directory" ]]; then
-    rm -rf -- "$temporary_directory"
-  fi
-}
-
 # @brief Extracts and validates a release tag from a URL.
 #
 # @param $1 release_url Url containing the release tag.
@@ -38,9 +26,10 @@ release_tag_from_url() {
 # @param $1 release_url Url to the latest release.
 # @return non-zero If the release URL cannot be resolved.
 latest_release_tag() {
-  local release_url
+  local release_url="$1"
+  local release_url_resolved
 
-  if ! release_url="$(
+  if ! release_url_resolved="$(
     curl \
       --fail \
       --silent \
@@ -53,13 +42,13 @@ latest_release_tag() {
       --tlsv1.2 \
       --output /dev/null \
       --write-out '%{url_effective}' \
-      "$1"
+      "$release_url"
   )"; then
     fail "could not determine the latest stable Doppler CLI release"
     return 1
   fi
 
-  release_tag_from_url "$release_url"
+  release_tag_from_url "$release_url_resolved"
 }
 
 # @brief Extracts the semantic version from a binary's output.

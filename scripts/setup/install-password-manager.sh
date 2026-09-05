@@ -36,7 +36,6 @@ if [[ -x "$INSTALL_PATH" ]]; then
 fi
 
 temporary_directory="$(mktemp -d)" || die "could not create a temporary directory"
-trap 'password_manager_cleanup "$temporary_directory"' EXIT
 
 archive_name="doppler_${latest_version}_linux_${architecture}.tar.gz"
 archive_url="https://github.com/DopplerHQ/cli/releases/download/${latest_tag}/${archive_name}"
