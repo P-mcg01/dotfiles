@@ -24,19 +24,53 @@ For a detailed history of changes, see the [CHANGELOG.md](./CHANGELOG.md).
 ![terminal](./.github/assets/terminal.png)
 ![workflow](./.github/assets/workflow.png)
 
-### Core Components
+## Development
 
-- **OS:** Fedora 44
-- **Compositor:** Hyprland
-- **Terminal:** Kitty
-- **Shell:** Zsh
-- **Dotfile Manager:** Chezmoi
+### Testing on containers
 
-## Installation
+For safe testing of configurations without affecting the local system, this repository provides a containerized development environment powered by [Podman](https://podman.io/) and [Taskfile](https://taskfile.dev/).
 
-Clone and initialize the dotfiles with chezmoi:
+#### Execution of test containers
+
+1. Copy the environment template file:
 
 ```bash
-chezmoi init git@github.com:P-mcg01/dotfiles.git
-chezmoi apply
+cp .env.example .env
 ```
+
+2. Define the `DOPPLER_TOKEN` variable inside `.env`.
+
+> [!IMPORTANT]
+> This token is injected into the container during execution. Manual installation of the Doppler CLI inside the container is not required, as a hook manages the installation process automatically.
+
+3. To launch an interactive container session, the following task command is executed:
+
+```bash
+task run:<OS> [TAG="<version>"]
+```
+
+- `<OS>`: Target distribution (fedora or debian).
+- `TAG`: Container image tag from GHCR. Defaults to `dev` when omitted.
+
+Example:
+
+```bash
+task run:fedora TAG=v26.09.05-r2.2
+```
+
+4. An interactive TTY session opens directly at `~/.local/share/chezmoi`.
+
+```bash
+chezmoi init
+chezmoi status
+```
+
+#### Local container builds
+
+To test modifications made to `validation/containers/` prior to opening a Pull Request, container images must be built locally using:
+
+```bash
+task build:<OS>
+```
+
+This command parses the corresponding `Containerfile` under `validation/containers/<OS>` and generates a local image tagged as `dev`.
