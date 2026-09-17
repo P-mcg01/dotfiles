@@ -3,20 +3,14 @@ description: Something stopped working or isn't behaving as expected
 title: "[BUG] "
 body:
   - type: textarea
-    id: symptom
+    id: issue
     attributes:
-      label: Symptom
-      description: What's happening.
-      placeholder: e.g. Starship prompt doesn't show git status on the work laptop.
+      label: What's broken?
+      description: Describe the bug, symptoms, or error message.
+      placeholder: e.g. Starship prompt doesn't show git status on Arch Linux.
     validations:
       required: true
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected behavior
-      description: What should happen instead.
-    validations:
-      required: true
+
   - type: textarea
     id: repro
     attributes:
@@ -26,7 +20,8 @@ body:
         2.
         3.
     validations:
-      required: true
+      required: false
+
   - type: input
     id: host
     attributes:
@@ -35,27 +30,12 @@ body:
       placeholder: e.g. fedora, debian, arch
     validations:
       required: false
+
   - type: textarea
-    id: root_cause
+    id: notes
     attributes:
-      label: Root cause
-      description: >-
-        Fill this in once diagnosed, not necessarily up front. The point is to record the actual cause, not just the symptom, so future me doesn't repeat the same mistake.
-    validations:
-      required: false
-  - type: textarea
-    id: tasks
-    attributes:
-      label: Tasks
-      value: |
-        - [ ]
-        - [ ]
-    validations:
-      required: false
-  - type: textarea
-    id: done
-    attributes:
-      label: How I'll know it's fixed
-      placeholder: e.g. Git status shows up in the prompt on both hosts after chezmoi apply.
+      label: Root Cause & Fix
+      description: Fill this in during/after diagnosis to record the fix for future reference.
+      placeholder: e.g. Missing libgit2 dependency or missing chezmoi template variable.
     validations:
       required: false
