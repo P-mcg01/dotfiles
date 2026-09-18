@@ -14,7 +14,7 @@ Built on Fedora Linux with Hyprland, Kitty, and Zsh.
 
 ## Overview
 
-This repository contains my personal Linux configuration files managed with **chezmoi**.
+This repository contains my personal Linux configuration files managed with [chezmoi](https://www.chezmoi.io/).
 
 For a detailed history of changes, see the [CHANGELOG.md](./CHANGELOG.md).
 
@@ -49,7 +49,7 @@ cp .env.example .env
 task run:<OS> [TAG="<version>"]
 ```
 
-- `<OS>`: Target distribution (fedora or debian).
+- `<OS>`: Target distribution ( [fedora](https://github.com/P-mcg01/dotfiles/pkgs/container/dotfiles-fedora) or [debian](https://github.com/P-mcg01/dotfiles/pkgs/container/dotfiles-debian) ).
 - `TAG`: Container image tag from GHCR. Defaults to `dev` when omitted.
 
 Example:
@@ -61,7 +61,6 @@ task run:fedora TAG=v26.09.05-r2.2
 4. An interactive TTY session opens directly at `~/.local/share/chezmoi`.
 
 ```bash
-chezmoi init
 chezmoi status
 ```
 
