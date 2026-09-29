@@ -15,6 +15,9 @@ jobs:
   detect-changes:
     name: detect container changes
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       has_changes: ${{ steps.matrix.outputs.has_changes }}
       matrix: ${{ steps.matrix.outputs.matrix }}
@@ -59,6 +62,11 @@ jobs:
     runs-on: ubuntu-24.04
     needs: detect-changes
     if: needs.detect-changes.outputs.has_changes == 'true'
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
+      id-token: write
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.detect-changes.outputs.matrix) }}
@@ -72,15 +80,27 @@ jobs:
           DISTRO: ${{ matrix.distro }}
         run: |
           package="dotfiles-${DISTRO}"
-          tag="v$(date -u +%y.%m.%d)-r${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
+          tag="v$(date -u +%y.%-m.%-d)-r${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
           owner=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
           ref="ghcr.io/${owner}/${package}:${tag}"
           echo "ref=${ref}" >> "$GITHUB_OUTPUT"
 
+      - name: Install Cosign
+        if: github.event_name == 'push'
+        uses: sigstore/cosign-installer@v4.0.0
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.1.0
 
-      - name: Build Docker image
+      - name: Log in to GitHub Container Registry
+        if: github.event_name == 'push'
+        uses: docker/login-action@v4.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build image
         id: docker-build
         uses: docker/build-push-action@v7.2.0
         with:
@@ -89,7 +109,8 @@ jobs:
           tags: ${{ steps.image.outputs.ref }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-          load: true
+          push: ${{ github.event_name == 'push' }}
+          load: ${{ github.event_name == 'pull_request' }}
 
       - name: Comment image build result
         if: always() && github.event_name == 'pull_request'
@@ -148,18 +169,17 @@ jobs:
           header: trivy-image-scan-${{ matrix.distro }}
           path: trivy-image-comment.txt
 
-      - name: Log in to GitHub Container Registry
+      - name: Sign and verify image with Cosign
         if: github.event_name == 'push'
-        uses: docker/login-action@v4.1.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push Docker image
-        if: github.event_name == 'push'
-        run: |
-          docker push "${{ steps.image.outputs.ref }}"
+        env:
+          IMAGE_NAME: ${{ steps.image.outputs.name }}
+          DIGEST: ${{ steps.docker-build.outputs.digest }}
+        run: |-
+          set -euo pipefail
+          cosign sign --yes "${IMAGE_NAME}@${DIGEST}"
+          cosign verify "${IMAGE_NAME}@${DIGEST}" \
+            --certificate-identity "https://github.com/${GITHUB_WORKFLOW_REF}" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
   ci-complete:
     name: ci complete
