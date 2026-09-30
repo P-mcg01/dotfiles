@@ -102,7 +102,7 @@ jobs:
 
       - name: Build image
         id: docker-build
-        uses: docker/build-push-action@v7.2.0
+        uses: docker/build-push-action@v7.4.0
         with:
           context: validation/containers
           file: validation/containers/${{ matrix.distro }}
