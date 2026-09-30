@@ -69,6 +69,8 @@ tasks:
       TARGET_DIR: "/home/tux/.local/share/chezmoi"
       CID_FILE: "/tmp/dotfiles-cid-{{.DISTRO}}"
     cmds:
+      - task: "verify:{{.DISTRO}}"
+        vars: {TAG: "{{.TAG}}"}
       - task: snapshot
         vars: {SNAPSHOT_PATH: "{{.SNAPSHOT}}"}
       - task: container:create
@@ -77,6 +79,22 @@ tasks:
         vars: {CID_FILE: "{{.CID_FILE}}", SNAPSHOT_PATH: "{{.SNAPSHOT}}", TARGET_DIR: "{{.TARGET_DIR}}"}
       - podman attach $(cat {{.CID_FILE}})
       - defer: rm -f "{{.SNAPSHOT}}" "{{.CID_FILE}}"
+
+  verify:*:
+    desc: "Verify the Cosign keyless signature of a published image"
+    requires:
+      vars: [TAG]
+    vars:
+      DISTRO: "{{index .MATCH 0}}"
+      TAG: '{{.TAG}}'
+      SIGNER_IDENTITY: "https://github.com/p-mcg01/dotfiles/.github/workflows/container-build.yml@refs/heads/main"
+      OIDC_ISSUER: "https://token.actions.githubusercontent.com"
+    cmds:
+      - |
+        cosign verify \
+          "ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:{{.TAG}}" \
+          --certificate-identity "{{.SIGNER_IDENTITY}}" \
+          --certificate-oidc-issuer "{{.OIDC_ISSUER}}"
 
   #
   # Development
