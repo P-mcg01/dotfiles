@@ -172,12 +172,11 @@ jobs:
       - name: Sign and verify image with Cosign
         if: github.event_name == 'push'
         env:
-          IMAGE_NAME: ${{ steps.image.outputs.name }}
+          REF: ${{ steps.image.outputs.ref }}
           DIGEST: ${{ steps.docker-build.outputs.digest }}
         run: |-
-          set -euo pipefail
-          cosign sign --yes "${IMAGE_NAME}@${DIGEST}"
-          cosign verify "${IMAGE_NAME}@${DIGEST}" \
+          cosign sign --yes "${REF}@${DIGEST}"
+          cosign verify "${REF}@${DIGEST}" \
             --certificate-identity "https://github.com/${GITHUB_WORKFLOW_REF}" \
             --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
