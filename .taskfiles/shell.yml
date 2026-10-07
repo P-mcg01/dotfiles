@@ -1,0 +1,57 @@
+version: "3"
+
+tasks:
+  find:
+    desc: "Find all shell scripts"
+    cmds:
+      - shfmt --find scripts/
+      - shfmt --find ./home/.chezmoiscripts
+
+  fmt:
+    desc: "Format bash scripts with shfmt"
+    cmds:
+      - shfmt -w scripts/
+      - shfmt -w ./home/.chezmoiscripts
+
+  check:
+    desc: "Check bash scripts formatting with shfmt"
+    cmds:
+      - shfmt -d scripts
+      - shfmt -d ./home/.chezmoiscripts
+
+  lint:
+    desc: "Lint bash scripts with shellcheck"
+    cmds:
+      - find scripts -type f -name '*.sh' -exec shellcheck {} +
+
+  test:
+    desc: "Run shellspec tests"
+    cmds:
+      - shellspec
+
+  test-check:
+    desc: "Check shellspec specs without running them"
+    cmds:
+      - shellspec --syntax-check
+
+  test-list:
+    desc: "List shellspec specs and examples"
+    cmds:
+      - shellspec --list specfiles
+      - shellspec --list examples
+
+  test-count:
+    desc: "Count shellspec specfiles and examples"
+    cmds:
+      - shellspec --count
+
+  coverage:
+    desc: "Run shellspec tests with kcov coverage"
+    cmds:
+      - shellspec --kcov
+
+  coverage-clean:
+    desc: "Run shellspec tests with fresh kcov coverage report"
+    cmds:
+      - rm -rf coverage
+      - shellspec --kcov

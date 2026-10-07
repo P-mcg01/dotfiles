@@ -1,173 +1,41 @@
-# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
 dotenv:
   - .env
 
+env:
+  PATH: '{{.HOME}}/.local/share/nvim/mason/bin:{{.PATH}}'
+
+includes:
+  dev: .taskfiles/dev.yml
+  shell:
+    taskfile: .taskfiles/shell.yml
+    aliases: [sh]
+  actions:
+    taskfile: .taskfiles/actions.yml
+    aliases: [gh]
+  container:
+    taskfile: .taskfiles/containers.yml
+    aliases: [ct]
+
 tasks:
-  #
-  # Containers
-  #
-  build:*:
-    desc: "Build local image for distribution {{.DISTRO}}"
-    dir: validation/containers
-    vars:
-      DISTRO: "{{index .MATCH 0}}"
+  default:
+    desc: "List all tasks"
+    silent: true
     cmds:
-      - podman build -t dotfiles-{{.DISTRO}}:dev -f {{.DISTRO}} .
+      - task --list
 
-  snapshot:
-    desc: "Capture uncommitted working tree state into a tarball"
-    internal: true
-    vars:
-      SNAPSHOT_PATH: "{{.SNAPSHOT_PATH}}"
+  check:
+    desc: "Execute all verifications (formatt + lint + tests)"
     cmds:
-      - |
-        git ls-files -z \
-          --cached --others --exclude-standard \
-          -- . ':!.env' ':!**/.env' ':!**/*.env' \
-          | tar --null --ignore-failed-read -czf "{{.SNAPSHOT_PATH}}" --files-from=-
+      - task: shell:check
+      - task: shell:lint
+      - task: actions:fmt-check
+      - task: actions:lint
+      - task: shell:test
 
-  container:create:
-    desc: "Create and start an ephemeral container"
-    internal: true
-    vars:
-      IMAGE: "{{.IMAGE}}"
-      DISTRO: "{{.DISTRO}}"
-      CID_FILE: "{{.CID_FILE}}"
-    cmds:
-      - |
-        CONTAINER_ID=$(podman create --rm -t \
-          -e DOPPLER_TOKEN \
-          --hostname dotfiles-{{.DISTRO}} \
-          {{.IMAGE}})
-        podman start "$CONTAINER_ID" >/dev/null
-        echo "$CONTAINER_ID" > "{{.CID_FILE}}"
-
-  container:seed:
-    desc: "Copy snapshot into container and extract it"
-    internal: true
-    vars:
-      CID_FILE: "{{.CID_FILE}}"
-      SNAPSHOT_PATH: "{{.SNAPSHOT_PATH}}"
-      TARGET_DIR: "{{.TARGET_DIR}}"
-    cmds:
-      - |
-        CONTAINER_ID=$(cat "{{.CID_FILE}}")
-        podman exec "$CONTAINER_ID" mkdir -p "{{.TARGET_DIR}}"
-        podman cp "{{.SNAPSHOT_PATH}}" "$CONTAINER_ID:/tmp/snapshot.tar.gz"
-        podman exec "$CONTAINER_ID" tar -xzf /tmp/snapshot.tar.gz -C "{{.TARGET_DIR}}"
-
-  run:*:
-    desc: "Run ephemeral container for distribution {{.DISTRO}}"
-    interactive: true
-    vars:
-      DISTRO: "{{index .MATCH 0}}"
-      TAG: '{{.TAG | default "dev"}}'
-      IMAGE: '{{if eq .TAG "dev"}}localhost/dotfiles-{{.DISTRO}}:dev{{else}}ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:{{.TAG}}{{end}}'
-      SNAPSHOT: "/tmp/dotfiles-snapshot-{{.DISTRO}}.tar.gz"
-      TARGET_DIR: "/home/tux/.local/share/chezmoi"
-      CID_FILE: "/tmp/dotfiles-cid-{{.DISTRO}}"
-    cmds:
-      - task: "verify:{{.DISTRO}}"
-        vars: {TAG: "{{.TAG}}"}
-      - task: snapshot
-        vars: {SNAPSHOT_PATH: "{{.SNAPSHOT}}"}
-      - task: container:create
-        vars: {IMAGE: "{{.IMAGE}}", DISTRO: "{{.DISTRO}}", CID_FILE: "{{.CID_FILE}}"}
-      - task: container:seed
-        vars: {CID_FILE: "{{.CID_FILE}}", SNAPSHOT_PATH: "{{.SNAPSHOT}}", TARGET_DIR: "{{.TARGET_DIR}}"}
-      - podman attach $(cat {{.CID_FILE}})
-      - defer: rm -f "{{.SNAPSHOT}}" "{{.CID_FILE}}"
-
-  verify:*:
-    desc: "Verify the Cosign keyless signature of a published image"
-    requires:
-      vars: [TAG]
-    vars:
-      DISTRO: "{{index .MATCH 0}}"
-      TAG: '{{.TAG}}'
-      SIGNER_IDENTITY: "https://github.com/p-mcg01/dotfiles/.github/workflows/container-build.yml@refs/heads/main"
-      OIDC_ISSUER: "https://token.actions.githubusercontent.com"
-    cmds:
-      - |
-        cosign verify \
-          "ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:{{.TAG}}" \
-          --certificate-identity "{{.SIGNER_IDENTITY}}" \
-          --certificate-oidc-issuer "{{.OIDC_ISSUER}}"
-
-  #
-  # Development
-  #
-  setup:
-    desc: "Prepare the local development environment"
-    cmds:
-      - task: install
-      - pre-commit install
-  install:
-    desc: "Install pinned development tools"
-    cmds:
-      - mise install
-  show-tools:
-    desc: "Show active tool versions"
-    cmds:
-      - mise current
-
-  #
-  # Bash
-  #
   fmt:
-    desc: "Format bash scripts with shfmt"
+    desc: "Formatear all codebase"
     cmds:
-      - shfmt -w scripts/
-  fmt-check:
-    desc: "Check bash scripts formatting with shfmt"
-    cmds:
-      - shfmt -d scripts/
-  lint:
-    desc: "Lint bash scripts with shellcheck"
-    cmds:
-      - find scripts -type f -name '*.sh' -exec shellcheck {} +
-  test:
-    desc: "Run shellspec tests"
-    cmds:
-      - shellspec
-  test-check:
-    desc: "Check shellspec specs without running them"
-    cmds:
-      - shellspec --syntax-check
-  test-list:
-    desc: "List shellspec specs and examples"
-    cmds:
-      - shellspec --list specfiles
-      - shellspec --list examples
-  test-count:
-    desc: "Count shellspec specfiles and examples"
-    cmds:
-      - shellspec --count
-  test-coverage:
-    desc: "Run shellspec tests with kcov coverage"
-    cmds:
-      - shellspec --kcov
-  test-coverage-clean:
-    desc: "Run shellspec tests with fresh kcov coverage report"
-    cmds:
-      - rm -rf coverage
-      - shellspec --kcov
-  #
-  # GitHub Actions
-  #
-  actions-fmt:
-    desc: "Format github actions workflows with yamlfmt"
-    cmds:
-      - yamlfmt .github/workflows/
-
-  actions-fmt-check:
-    desc: "Check github actions workflow formatting with yamlfmt"
-    cmds:
-      - yamlfmt -lint .github/workflows/
-
-  actions-lint:
-    desc: "Lint github actions workflows with actionlint"
-    cmds:
-      - actionlint
+      - task: shell:fmt
+      - task: actions:fmt

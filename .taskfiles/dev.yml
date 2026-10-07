@@ -1,0 +1,13 @@
+version: "3"
+
+tasks:
+  setup:
+    desc: "Prepare the local development environment"
+    cmds:
+      - task: install
+      - pre-commit install
+
+  install:
+    desc: "Install pinned development tools"
+    cmds:
+      - mise install

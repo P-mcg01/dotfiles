@@ -1,0 +1,17 @@
+version: "3"
+
+tasks:
+  fmt:
+    desc: "Format github actions workflows with yamlfmt"
+    cmds:
+      - yamlfmt .github/workflows/
+
+  fmt-check:
+    desc: "Check github actions workflow formatting with yamlfmt"
+    cmds:
+      - yamlfmt -lint .github/workflows/
+
+  lint:
+    desc: "Lint github actions workflows with actionlint"
+    cmds:
+      - actionlint

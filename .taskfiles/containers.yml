@@ -1,0 +1,90 @@
+version: "3"
+
+tasks:
+  build:*:
+    desc: "Build local image for distribution {{.DISTRO}}"
+    dir: validation/containers
+    vars:
+      DISTRO: "{{index .MATCH 0}}"
+    cmds:
+      - podman build -t dotfiles-{{.DISTRO}}:dev -f {{.DISTRO}} .
+
+  snapshot:
+    desc: "Capture uncommitted working tree state into a tarball"
+    internal: true
+    vars:
+      SNAPSHOT_PATH: "{{.SNAPSHOT_PATH}}"
+    cmds:
+      - |
+        git ls-files -z \
+          --cached --others --exclude-standard \
+          -- . ':!.env' ':!**/.env' ':!**/*.env' \
+          | tar --null --ignore-failed-read -czf "{{.SNAPSHOT_PATH}}" --files-from=-
+
+  create:
+    desc: "Create and start an ephemeral container"
+    internal: true
+    vars:
+      IMAGE: "{{.IMAGE}}"
+      DISTRO: "{{.DISTRO}}"
+      CID_FILE: "{{.CID_FILE}}"
+    cmds:
+      - |
+        CONTAINER_ID=$(podman create --rm -t \
+          -e DOPPLER_TOKEN \
+          --hostname dotfiles-{{.DISTRO}} \
+          {{.IMAGE}})
+        podman start "$CONTAINER_ID" >/dev/null
+        echo "$CONTAINER_ID" > "{{.CID_FILE}}"
+
+  seed:
+    desc: "Copy snapshot into container and extract it"
+    internal: true
+    vars:
+      CID_FILE: "{{.CID_FILE}}"
+      SNAPSHOT_PATH: "{{.SNAPSHOT_PATH}}"
+      TARGET_DIR: "{{.TARGET_DIR}}"
+    cmds:
+      - |
+        CONTAINER_ID=$(cat "{{.CID_FILE}}")
+        podman exec "$CONTAINER_ID" mkdir -p "{{.TARGET_DIR}}"
+        podman cp "{{.SNAPSHOT_PATH}}" "$CONTAINER_ID:/tmp/snapshot.tar.gz"
+        podman exec "$CONTAINER_ID" tar -xzf /tmp/snapshot.tar.gz -C "{{.TARGET_DIR}}"
+
+  run:*:
+    desc: "Run ephemeral container for distribution {{.DISTRO}}"
+    interactive: true
+    vars:
+      DISTRO: "{{index .MATCH 0}}"
+      TAG: '{{.TAG | default "dev"}}'
+      IMAGE: '{{if eq .TAG "dev"}}localhost/dotfiles-{{.DISTRO}}:dev{{else}}ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:{{.TAG}}{{end}}'
+      SNAPSHOT: "/tmp/dotfiles-snapshot-{{.DISTRO}}.tar.gz"
+      TARGET_DIR: "/home/tux/.local/share/chezmoi"
+      CID_FILE: "/tmp/dotfiles-cid-{{.DISTRO}}"
+    cmds:
+      - task: "verify:{{.DISTRO}}"
+        vars: {TAG: "{{.TAG}}"}
+      - task: snapshot
+        vars: {SNAPSHOT_PATH: "{{.SNAPSHOT}}"}
+      - task: container:create
+        vars: {IMAGE: "{{.IMAGE}}", DISTRO: "{{.DISTRO}}", CID_FILE: "{{.CID_FILE}}"}
+      - task: container:seed
+        vars: {CID_FILE: "{{.CID_FILE}}", SNAPSHOT_PATH: "{{.SNAPSHOT}}", TARGET_DIR: "{{.TARGET_DIR}}"}
+      - podman attach $(cat {{.CID_FILE}})
+      - defer: rm -f "{{.SNAPSHOT}}" "{{.CID_FILE}}"
+
+  verify:*:
+    desc: "Verify the Cosign keyless signature of a published image"
+    requires:
+      vars: [TAG]
+    vars:
+      DISTRO: "{{index .MATCH 0}}"
+      TAG: '{{.TAG}}'
+      SIGNER_IDENTITY: "https://github.com/P-mcg01/dotfiles/.github/workflows/containers.yml@refs/heads/main"
+      OIDC_ISSUER: "https://token.actions.githubusercontent.com"
+    cmds:
+      - |-
+        cosign verify \
+          "ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:{{.TAG}}" \
+          --certificate-identity "{{.SIGNER_IDENTITY}}" \
+          --certificate-oidc-issuer "{{.OIDC_ISSUER}}"
