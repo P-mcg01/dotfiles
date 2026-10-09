@@ -39,7 +39,7 @@ require_command() {
   fi
 
   for required_command in "$@"; do
-    if ! command -v "$required_command" >/dev/null 2>&1; then
+    if ! command -v "$required_command" > /dev/null 2>&1; then
       fail "required command not found: $required_command"
       return 1
     fi
@@ -79,22 +79,22 @@ get_architecture() {
   local architecture="${1:-$(uname -m)}"
 
   case "$architecture" in
-  x86_64)
-    printf '%s\n' "amd64"
-    ;;
-  aarch64 | arm64)
-    printf '%s\n' "arm64"
-    ;;
-  armv7l | armv7)
-    printf '%s\n' "armv7"
-    ;;
-  armv6l | armv6)
-    printf '%s\n' "armv6"
-    ;;
-  *)
-    fail "unsupported architecture: $architecture"
-    return 1
-    ;;
+    x86_64)
+      printf '%s\n' "amd64"
+      ;;
+    aarch64 | arm64)
+      printf '%s\n' "arm64"
+      ;;
+    armv7l | armv7)
+      printf '%s\n' "armv7"
+      ;;
+    armv6l | armv6)
+      printf '%s\n' "armv6"
+      ;;
+    *)
+      fail "unsupported architecture: $architecture"
+      return 1
+      ;;
   esac
 }
 

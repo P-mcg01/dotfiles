@@ -34,10 +34,6 @@ footer = """
 
 trim = true
 render_always = true
-#postprocessors = [
-    # Replace the placeholder <REPO> with a URL.
-    #{ pattern = '<REPO>', replace = "https://github.com/orhun/git-cliff" },
-#]
 output = "CHANGELOG.md"
 
 [git]
@@ -52,13 +48,7 @@ processing_order = [
   "commit_parsers",
   "link_parsers",
 ]
-commit_preprocessors = [
-    # Replace issue numbers with link templates to be updated in `changelog.postprocessors`.
-    #{ pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](<REPO>/issues/${2}))"},
-    # Check spelling of the commit message using https://github.com/crate-ci/typos.
-    # If the spelling is incorrect, it will be fixed automatically.
-    #{ pattern = '.*', replace_command = 'typos --write-changes -' },
-]
+commit_preprocessors = []
 protect_breaking_commits = false
 commit_parsers = [
   { message = "^chore\\(release\\): prepare for", skip = true },

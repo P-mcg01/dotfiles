@@ -58,7 +58,7 @@ latest_release_tag() {
 version_from_binary() {
   local version_output
 
-  version_output="$("$1" --version 2>/dev/null)" || {
+  version_output="$("$1" --version 2> /dev/null)" || {
     fail "could not query version from binary: $1"
     return 1
   }
