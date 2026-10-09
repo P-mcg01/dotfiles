@@ -1,0 +1,6 @@
+include = ["home/**/*.toml"]
+
+exclude = [".git/**", ".chezmoitemplates/**", "home/.chezmoitemplates/**"]
+
+[formatting]
+align_entries = false

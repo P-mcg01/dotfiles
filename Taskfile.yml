@@ -17,6 +17,9 @@ includes:
   container:
     taskfile: .taskfiles/containers.yml
     aliases: [ct]
+  dotfiles:
+    taskfile: .taskfiles/dotfiles.yml
+    flatten: true
 
 tasks:
   default:
@@ -24,18 +27,3 @@ tasks:
     silent: true
     cmds:
       - task --list
-
-  check:
-    desc: "Execute all verifications (formatt + lint + tests)"
-    cmds:
-      - task: shell:check
-      - task: shell:lint
-      - task: actions:fmt-check
-      - task: actions:lint
-      - task: shell:test
-
-  fmt:
-    desc: "Formatear all codebase"
-    cmds:
-      - task: shell:fmt
-      - task: actions:fmt

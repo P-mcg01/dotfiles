@@ -88,3 +88,17 @@ tasks:
           "ghcr.io/p-mcg01/dotfiles-{{.DISTRO}}:{{.TAG}}" \
           --certificate-identity "{{.SIGNER_IDENTITY}}" \
           --certificate-oidc-issuer "{{.OIDC_ISSUER}}"
+
+  fmt:
+    desc: "Format Containerfiles with dockerfmt"
+    sources: ["validation/containers/*"]
+    cmds:
+      - for: sources
+        cmd: dockerfmt -i 2 -n -w '{{.ITEM}}'
+
+  fmt:check:
+    desc: "Check Containerfile formatting"
+    sources: ["validation/containers/*"]
+    cmds:
+      - for: sources
+        cmd: dockerfmt -c '{{.ITEM}}'

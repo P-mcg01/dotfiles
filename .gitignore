@@ -6,3 +6,6 @@
 /.shellspec-quick.log
 /report/
 /coverage/
+
+# Taskfile
+.task/

@@ -1,0 +1,110 @@
+version: "3"
+
+vars:
+  ZSH_FILES:
+    - ./home/dot_p10k.zsh
+  ZSH_TEMPLATES:
+    - ./home/dot_zshrc.tmpl
+
+tasks:
+  fmt:
+    desc: "Format all dotfiles"
+    cmds:
+      - task: fmt:zsh
+      - task: fmt:kdl
+      - task: fmt:toml
+      - task: fmt:mise
+      - task: fmt:yaml
+      - task: fmt:lua
+
+  check:
+    desc: "Check formatting for all dotfiles"
+    cmds:
+      - task: check:kdl
+      - task: check:toml
+      - task: check:mise
+      - task: check:yaml
+      - task: check:lua
+
+  #
+  # zsh files
+  #
+  fmt:zsh:
+    desc: "Format ZSH files with shfmt (except templates)"
+    cmds:
+      - shfmt -w -ln=zsh {{join " " .ZSH_FILES}}
+
+  check:zsh:
+    desc: "Check ZSH formatting"
+    cmds:
+      - for: {var: ZSH_TEMPLATES}
+        cmd: chezmoi execute-template --file {{.ITEM}} | shfmt -l -ln=zsh
+        ignore_error: true
+      - shfmt -l -ln=zsh {{join " " .ZSH_FILES}}
+
+  # kdl files
+  fmt:kdl:
+    desc: "Format KDL files with kdlfmt"
+    cmds:
+      - kdlfmt format ./home
+
+  check:kdl:
+    desc: "Check KDL formatting"
+    cmds:
+      - kdlfmt check ./home
+
+  #
+  # toml files
+  #
+  fmt:toml:
+    desc: "Format TOML files with taplo"
+    env:
+      RUST_LOG: warn
+    cmds:
+      - taplo fmt
+
+  check:toml:
+    desc: "Check TOML formatting"
+    env:
+      RUST_LOG: warn
+    cmds:
+      - taplo fmt --check
+
+  #
+  # mise dotfiles
+  #
+  fmt:mise:
+    desc: "Format MISE config with mise"
+    cmds:
+      - mise fmt --cd ./home/dot_config
+
+  check:mise:
+    desc: "Check MISE formatting"
+    cmds:
+      - mise fmt --check --cd ./home/dot_config
+
+  #
+  # yaml files
+  #
+  fmt:yaml:
+    desc: "Format YAML files with yamlfmt"
+    cmds:
+      - yamlfmt -conf .yamlfmt ./home
+
+  check:yaml:
+    desc: "Check YAML formatting"
+    cmds:
+      - yamlfmt -conf .yamlfmt -lint ./home
+
+  #
+  # lua files
+  #
+  fmt:lua:
+    desc: "Format LUA files with styLua"
+    cmds:
+      - stylua ./home
+
+  check:lua:
+    desc: "Check LUA formatting"
+    cmds:
+      - stylua --check ./home
