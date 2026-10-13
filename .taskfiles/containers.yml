@@ -102,3 +102,10 @@ tasks:
     cmds:
       - for: sources
         cmd: dockerfmt -c '{{.ITEM}}'
+
+  lint:
+    desc: "Lint Containerfiles with hadolint"
+    sources: ["validation/containers/*"]
+    cmds:
+      - for: sources
+        cmd: hadolint --config .hadolint.yaml '{{.ITEM}}'

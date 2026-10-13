@@ -33,7 +33,9 @@ jobs:
             stylua = "latest"
             shellcheck = "latest"
             shellspec = "latest"
+            hadolint = "latest"
             "github:hougesen/kdlfmt" = "latest"
+            "aqua:Kampfkarren/selene" = "latest"
 
       - name: Setup Task
         uses: go-task/setup-task@v2
@@ -44,6 +46,12 @@ jobs:
         run: |
           task check
           task shell:check
+
+      - name: Run linting
+        run: |
+          task lint
+          task shell:lint
+          task container:lint
 
       - name: Run tests
         run: task shell:test

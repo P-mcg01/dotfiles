@@ -1,0 +1,12 @@
+# https://github.com/hadolint/hadolint#configure
+
+failure-threshold: warning
+
+ignored:
+  - DL3008 # Pin versions in apt-get install
+  - DL3041 # Specify version with dnf install
+  - DL3009 # Delete the apt-get lists after installing
+  - DL3064 # Potentially sensitive data in ARG/ENV
+  - DL4006 # Set the SHELL option -o pipefail before RUN with a pipe
+
+# vim: ft=yaml

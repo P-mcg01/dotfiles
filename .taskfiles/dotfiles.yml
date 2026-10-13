@@ -26,6 +26,11 @@ tasks:
       - task: check:yaml
       - task: check:lua
 
+  lint:
+    desc: "Lint all dotfiles"
+    cmds:
+      - task: lint:lua
+
   #
   # zsh files
   #
@@ -42,7 +47,9 @@ tasks:
         ignore_error: true
       - shfmt -l -ln=zsh {{join " " .ZSH_FILES}}
 
+  #
   # kdl files
+  #
   fmt:kdl:
     desc: "Format KDL files with kdlfmt"
     cmds:
@@ -108,3 +115,8 @@ tasks:
     desc: "Check LUA formatting"
     cmds:
       - stylua --check ./home
+
+  lint:lua:
+    desc: "Lint LUA files with selene"
+    cmds:
+      - selene ./home/dot_config/
