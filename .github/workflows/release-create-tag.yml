@@ -1,0 +1,41 @@
+name: release-create-tag
+run-name: Create release tag
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: release-create-tag
+
+jobs:
+  tag:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: release
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Install mise
+        uses: jdx/mise-action@v4
+        with:
+          cache: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          mise_toml: |
+            [tools]
+            task = "3.50.0"
+            "github:k1LoW/calver" = "1.0.2"
+
+      - uses: crazy-max/ghaction-import-gpg@v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_tag_gpgsign: true
+
+      - name: Create signed tag
+        run: task dev:release-tag

@@ -140,3 +140,19 @@ task ct:build:<OS>
 ```
 
 This command parses the corresponding `Containerfile` under `validation/containers/<OS>` and generates a local image tagged as `dev`.
+
+## Releases
+
+Releases follow [Calendar Versioning](https://calver.org/) using the `YYYY.0M.MICRO` format, prefixed with `v` (e.g., `v2026.03.8`). Release tags must reference commits on `main` and be signed with GPG.
+
+### Create a release
+
+Preview the next version and create the signed release tag:
+
+```bash
+task dev:next-version
+task dev:release-tag
+```
+
+> [!note]
+> Alternatively, trigger the [Create release tag](https://github.com/P-mcg01/dotfiles-dev/actions/workflows/release-create-tag.yml) workflow manually from GitHub Actions while targeting the `main` branch.

@@ -1,0 +1,71 @@
+name: release-publish
+run-name: Publish ${{ github.ref_name }}
+
+on:
+  push:
+    tags:
+      - "v[0-9][0-9][0-9][0-9].[0-9][0-9].*"
+
+permissions: {}
+
+concurrency:
+  group: release-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          re='^v[0-9]{4}\.(0[1-9]|1[0-2])\.(0|[1-9][0-9]*)$'
+          [[ $TAG =~ $re ]] \
+            || { echo "::error::Invalid tag: $TAG (expected vYYYY.0M.MICRO)"; exit 1; }
+
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main \
+            || { echo "::error::Tag $TAG is not on main"; exit 1; }
+
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v4
+        env:
+          OUTPUT: CHANGELOG.md
+
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        with:
+          args: --latest --strip all
+        env:
+          OUTPUT: .release/RELEASE_NOTES.md
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" --verify-tag \
+            --title "$TAG" --notes-file .release/RELEASE_NOTES.md
+
+      - uses: crazy-max/ghaction-import-gpg@v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Commit CHANGELOG.md to main
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |-
+          set +e
+          git add CHANGELOG.md
+          git commit -m "chore(release): update changelog for $TAG"
+          git push origin HEAD:main

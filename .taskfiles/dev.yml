@@ -11,3 +11,24 @@ tasks:
     desc: "Install pinned development tools"
     cmds:
       - mise install
+
+  next-version:
+    desc: "Print the next CalVer version (dry run)"
+    silent: true
+    cmds:
+      - |
+        set -euo pipefail
+        next=$(git tag --list 'v[0-9]*' | sed 's/^v//' | calver -l YYYY.0M.MICRO -n)
+        echo "v$next"
+
+  release-tag:
+    desc: "Create and push the next signed CalVer tag"
+    cmds:
+      - |-
+        set -euo pipefail
+        next=$(git tag --list 'v[0-9]*' | sed 's/^v//' | calver -l YYYY.0M.MICRO -n)
+        version="v$next"
+        git tag -s "$version" -m "Release $version"
+        git push origin tag "$version"
+        echo "Tag $version pushed"
+
