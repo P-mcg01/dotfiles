@@ -5,7 +5,64 @@ following [Conventional Commits](https://www.conventionalcommits.org/)
 and the **CalVer** versioning scheme (`YYYY.0M.MICRO`).
 
 ---
-## [2026.07.0] - 2026-07-22
+## [2026.10.0] - 2026-10-21
+*Total commits in this release: 28*
+
+### Features
+
+- *(shell)* Migrate prompt from starship to powerlevel10k (#8)
+- Add global tools configuration with mise (#12)
+
+### Bug Fixes
+
+- *(github)* Correct issue form title configuration (#6)
+- Sign and verify image using the generated ref
+
+### Other Changes
+
+- Add doppler password manager setup (#10)
+- *(deps)* Bump actions/checkout from 6 to 7
+- *(deps)* Bump sigstore/cosign-installer from 4.0.0 to 4.1.2
+- *(deps)* Group dependabot updates monthly (#22)
+
+### Refactoring
+
+- Move chezmoi source into home directory (#10)
+- *(validation)* Streamline container testing with snapshot seeding (#10)
+- *(task)* Modularize taskfiles (#22)
+
+### Styling
+
+- Apply code formatting across dotfiles (#22)
+
+### Documentation
+
+- Add container testing section using podman and taskfile
+- Update README.md
+- Document dotfiles formatting and linting tasks [skip ci]
+
+### Testing
+
+- *(containers)* Add containerfiles and taskfile for testing (#10)
+- Add shellspec tests and refactor core utilities
+
+### Maintenance & Tooling
+
+- *(github)* Add issue and pull request templates (#6)
+- Add repository agent instructions (#10)
+- *(containers)* Add multi-distro container build workflow (#10)
+- *(github)* Simplify issue templates and add dependabot (#12)
+- Sign container images with cosign keyless (#14)
+- Add cosign verification and bump chezmoi
+- Rebuild images when the build workflow changes
+- Add code quality checks and formatting tasks (#22)
+- Enforce code quality checks for dotfiles
+- *(release)* Automate release creation and publishing (#26)
+
+### Reverts
+
+- *(waybar)* Remove waybar configuration
+## [v2026.07.0] - 2026-07-22
 *Total commits in this release: 31*
 
 ### Features
