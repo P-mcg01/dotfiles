@@ -94,7 +94,7 @@ jobs:
 
       - name: Log in to GitHub Container Registry
         if: github.event_name == 'push'
-        uses: docker/login-action@v4.6.0
+        uses: docker/login-action@v4.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -114,7 +114,7 @@ jobs:
 
       - name: Comment image build result
         if: always() && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v3.0.4
+        uses: marocchino/sticky-pull-request-comment@v3.0.5
         with:
           header: docker-image-build-${{ matrix.distro }}
           message: |-
@@ -164,7 +164,7 @@ jobs:
 
       - name: Comment Trivy image scan
         if: always() && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v3.0.4
+        uses: marocchino/sticky-pull-request-comment@v3.0.5
         with:
           header: trivy-image-scan-${{ matrix.distro }}
           path: trivy-image-comment.txt
