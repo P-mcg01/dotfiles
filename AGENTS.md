@@ -10,7 +10,7 @@ Required loop before considering any bash change done in this order:
 
 `task sh:fmt`: format with shfmt (writes changes)
 `task sh:lint`: lint with shellcheck
-`task sh:test`: run the shellspec suite
+`task sh:coverage`: run the shellspec suite with kcov coverage (minimum threshold: 80%)
 
 Required loop before considering any GitHub Actions change done in this order:
 

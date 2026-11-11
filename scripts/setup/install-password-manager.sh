@@ -6,7 +6,7 @@ set -euo pipefail
 SCRIPT_DIRECTORY="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIRECTORY
 readonly RELEASE_URL="https://github.com/DopplerHQ/cli/releases/latest"
-readonly INSTALL_PATH="/usr/local/bin/doppler"
+readonly INSTALL_PATH="${DOPPLER_INSTALL_PATH:-/usr/local/bin/doppler}"
 
 # shellcheck disable=SC1091
 source "$SCRIPT_DIRECTORY/../lib/password-manager.sh"

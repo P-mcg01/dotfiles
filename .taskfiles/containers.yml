@@ -66,9 +66,9 @@ tasks:
         vars: {TAG: "{{.TAG}}"}
       - task: snapshot
         vars: {SNAPSHOT_PATH: "{{.SNAPSHOT}}"}
-      - task: container:create
+      - task: create
         vars: {IMAGE: "{{.IMAGE}}", DISTRO: "{{.DISTRO}}", CID_FILE: "{{.CID_FILE}}"}
-      - task: container:seed
+      - task: seed
         vars: {CID_FILE: "{{.CID_FILE}}", SNAPSHOT_PATH: "{{.SNAPSHOT}}", TARGET_DIR: "{{.TARGET_DIR}}"}
       - podman attach $(cat {{.CID_FILE}})
       - defer: rm -f "{{.SNAPSHOT}}" "{{.CID_FILE}}"
