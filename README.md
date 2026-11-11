@@ -1,16 +1,16 @@
 # Personal Dotfiles
 
+<p align="center">
+  <a href="https://codecov.io/gh/P-mcg01/dotfiles"><img src="https://codecov.io/gh/P-mcg01/dotfiles/branch/29-improve-shell-quality/graph/badge.svg?token=TOAO7VPCML" alt="codecov"></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=P-mcg01_dotfiles"><img src="https://sonarcloud.io/api/project_badges/measure?project=P-mcg01_dotfiles&metric=reliability_rating" alt="Reliability Rating"></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=P-mcg01_dotfiles"><img src="https://sonarcloud.io/api/project_badges/measure?project=P-mcg01_dotfiles&metric=security_rating" alt="Security Rating"></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=P-mcg01_dotfiles"><img src="https://sonarcloud.io/api/project_badges/measure?project=P-mcg01_dotfiles&metric=sqale_rating" alt="Maintainability Rating"></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=P-mcg01_dotfiles"><img src="https://sonarcloud.io/api/project_badges/measure?project=P-mcg01_dotfiles&metric=alert_status" alt="Quality gate status"></a>
+</p>
+
 A modern Linux desktop focused on productivity, simplicity, and a keyboard-first workflow.
 
 Built on Fedora Linux with Hyprland, Kitty, and Zsh.
-
-![Fedora](https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white)
-![Hyprland](https://img.shields.io/badge/Hyprland-58E1FF?style=for-the-badge&logo=wayland&logoColor=black)
-![Kitty](https://img.shields.io/badge/Kitty-000000?style=for-the-badge&logo=gnubash&logoColor=white)
-![Zsh](https://img.shields.io/badge/Zsh-F15A24?style=for-the-badge&logo=zsh&logoColor=white)
-![Wayland](https://img.shields.io/badge/Wayland-FFBC00?style=for-the-badge&logo=wayland&logoColor=black)
-![CalVer](https://img.shields.io/badge/CalVer-YYYY.0M.MICRO-blue?style=for-the-badge)
-![Protected by Gitleaks](https://img.shields.io/badge/Protected%20by-Gitleaks-blue?style=for-the-badge)
 
 ## Overview
 
@@ -155,4 +155,4 @@ task dev:release-tag
 ```
 
 > [!note]
-> Alternatively, trigger the [Create release tag](https://github.com/P-mcg01/dotfiles-dev/actions/workflows/release-create-tag.yml) workflow manually from GitHub Actions while targeting the `main` branch.
+> Alternatively, trigger the [Create release tag](https://github.com/P-mcg01/dotfiles/actions/workflows/release-create-tag.yml) workflow manually from GitHub Actions while targeting the `main` branch.
