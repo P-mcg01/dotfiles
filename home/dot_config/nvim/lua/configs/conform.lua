@@ -8,6 +8,7 @@ local options = {
     terraform = { "terraform_fmt" },
     sh = { "shfmt" },
     bash = { "shfmt" },
+    dockerfile = { "dockerfmt" },
   },
   format_on_save = {
     timeout_ms = 500,

@@ -29,6 +29,13 @@ vim.lsp.config("bashls", {
   end,
 })
 
+vim.lsp.config("dockerls", {
+  on_attach = function(client)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
+})
+
 local servers = {
   "html",
   "cssls",

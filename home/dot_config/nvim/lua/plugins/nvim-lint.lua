@@ -12,6 +12,7 @@ return {
       yaml = { "yamllint" },
       sh = { "shellcheck" },
       bash = { "shellcheck" },
+      dockerfile = { "hadolint" },
     }
 
     --[[
