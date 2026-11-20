@@ -6,6 +6,8 @@ local options = {
     markdown = { "prettier" },
     yaml = { "yamlfmt" },
     terraform = { "terraform_fmt" },
+    sh = { "shfmt" },
+    bash = { "shfmt" },
   },
   format_on_save = {
     timeout_ms = 500,

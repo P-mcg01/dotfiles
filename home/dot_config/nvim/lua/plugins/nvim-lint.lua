@@ -10,6 +10,8 @@ return {
     --]]
     lint.linters_by_ft = {
       yaml = { "yamllint" },
+      sh = { "shellcheck" },
+      bash = { "shellcheck" },
     }
 
     --[[

@@ -17,11 +17,24 @@ vim.lsp.config("yamlls", {
   },
 })
 
+vim.lsp.config("bashls", {
+  settings = {
+    bashIde = {
+      shellcheckPath = "",
+    },
+  },
+  on_attach = function(client, _)
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
+})
+
 local servers = {
   "html",
   "cssls",
   "yamlls",
   "gh_actions_ls",
+  "bashls",
 }
 
 vim.lsp.enable(servers)
