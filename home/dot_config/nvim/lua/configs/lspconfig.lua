@@ -21,6 +21,7 @@ local servers = {
   "html",
   "cssls",
   "yamlls",
+  "gh_actions_ls",
 }
 
 vim.lsp.enable(servers)

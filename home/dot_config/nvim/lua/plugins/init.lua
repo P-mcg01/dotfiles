@@ -30,6 +30,8 @@ return {
         "yaml-language-server",
         "yamlfmt",
         "yamllint",
+        "gh-actions-language-server",
+        "actionlint",
       },
     },
   },
