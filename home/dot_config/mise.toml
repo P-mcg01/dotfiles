@@ -7,8 +7,8 @@ gh = "latest"
 terraform = "1.16.3"
 opentofu = "1.12.6"
 
-# Npm tools
-"npm:tree-sitter-cli" = { version = "0.26.13", npm_args = "--ignore-scripts=false" }
+# Aqua tools
+"aqua:tree-sitter/tree-sitter" = "0.26.13"
 
 # Runtimes & Languages
 go = "1.27.1"
