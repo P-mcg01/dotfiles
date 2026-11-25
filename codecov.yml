@@ -9,10 +9,10 @@ coverage:
         target: 80%
 
 ignore:
-  - "spec/**"
-  - "coverage/**"
-  - "home/dot_*/**"
+  - 'spec/**'
+  - 'coverage/**'
+  - 'home/dot_*/**'
 
 comment:
-  layout: "condensed_header, diff, files"
+  layout: 'condensed_header, diff, files'
   require_changes: false

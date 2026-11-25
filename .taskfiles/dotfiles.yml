@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 vars:
   ZSH_FILES:
@@ -8,7 +8,7 @@ vars:
 
 tasks:
   fmt:
-    desc: "Format all dotfiles"
+    desc: 'Format all dotfiles'
     cmds:
       - task: fmt:zsh
       - task: fmt:kdl
@@ -18,7 +18,7 @@ tasks:
       - task: fmt:lua
 
   check:
-    desc: "Check formatting for all dotfiles"
+    desc: 'Check formatting for all dotfiles'
     cmds:
       - task: check:kdl
       - task: check:toml
@@ -27,7 +27,7 @@ tasks:
       - task: check:lua
 
   lint:
-    desc: "Lint all dotfiles"
+    desc: 'Lint all dotfiles'
     cmds:
       - task: lint:lua
 
@@ -35,12 +35,12 @@ tasks:
   # zsh files
   #
   fmt:zsh:
-    desc: "Format ZSH files with shfmt (except templates)"
+    desc: 'Format ZSH files with shfmt (except templates)'
     cmds:
       - shfmt -w -ln=zsh {{join " " .ZSH_FILES}}
 
   check:zsh:
-    desc: "Check ZSH formatting"
+    desc: 'Check ZSH formatting'
     cmds:
       - for: {var: ZSH_TEMPLATES}
         cmd: chezmoi execute-template --file {{.ITEM}} | shfmt -l -ln=zsh
@@ -51,12 +51,12 @@ tasks:
   # kdl files
   #
   fmt:kdl:
-    desc: "Format KDL files with kdlfmt"
+    desc: 'Format KDL files with kdlfmt'
     cmds:
       - kdlfmt format ./home
 
   check:kdl:
-    desc: "Check KDL formatting"
+    desc: 'Check KDL formatting'
     cmds:
       - kdlfmt check ./home
 
@@ -64,14 +64,14 @@ tasks:
   # toml files
   #
   fmt:toml:
-    desc: "Format TOML files with taplo"
+    desc: 'Format TOML files with taplo'
     env:
       RUST_LOG: warn
     cmds:
       - taplo fmt
 
   check:toml:
-    desc: "Check TOML formatting"
+    desc: 'Check TOML formatting'
     env:
       RUST_LOG: warn
     cmds:
@@ -81,12 +81,12 @@ tasks:
   # mise dotfiles
   #
   fmt:mise:
-    desc: "Format MISE config with mise"
+    desc: 'Format MISE config with mise'
     cmds:
       - mise fmt --cd ./home/dot_config
 
   check:mise:
-    desc: "Check MISE formatting"
+    desc: 'Check MISE formatting'
     cmds:
       - mise fmt --check --cd ./home/dot_config
 
@@ -94,29 +94,29 @@ tasks:
   # yaml files
   #
   fmt:yaml:
-    desc: "Format YAML files with yamlfmt"
+    desc: 'Format YAML files with yamlfmt'
     cmds:
-      - yamlfmt -conf .yamlfmt ./home
+      - yamlfmt -conf ./home/dot_config/yamlfmt/yamlfmt.yml ./home
 
   check:yaml:
-    desc: "Check YAML formatting"
+    desc: 'Check YAML formatting'
     cmds:
-      - yamlfmt -conf .yamlfmt -lint ./home
+      - yamlfmt -conf ./home/dot_config/yamlfmt/yamlfmt.yml -lint ./home
 
   #
   # lua files
   #
   fmt:lua:
-    desc: "Format LUA files with styLua"
+    desc: 'Format LUA files with styLua'
     cmds:
       - stylua ./home
 
   check:lua:
-    desc: "Check LUA formatting"
+    desc: 'Check LUA formatting'
     cmds:
       - stylua --check ./home
 
   lint:lua:
-    desc: "Lint LUA files with selene"
+    desc: 'Lint LUA files with selene'
     cmds:
       - selene ./home/dot_config/

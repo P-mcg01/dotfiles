@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 dotenv:
   - .env
@@ -23,7 +23,7 @@ includes:
 
 tasks:
   default:
-    desc: "List all tasks"
+    desc: 'List all tasks'
     silent: true
     cmds:
       - task --list

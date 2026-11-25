@@ -1,19 +1,19 @@
-version: "3"
+version: '3'
 
 tasks:
   setup:
-    desc: "Prepare the local development environment"
+    desc: 'Prepare the local development environment'
     cmds:
       - task: install
       - pre-commit install
 
   install:
-    desc: "Install pinned development tools"
+    desc: 'Install pinned development tools'
     cmds:
       - mise install
 
   next-version:
-    desc: "Print the next CalVer version (dry run)"
+    desc: 'Print the next CalVer version (dry run)'
     silent: true
     cmds:
       - |
@@ -22,7 +22,7 @@ tasks:
         echo "v$next"
 
   release-tag:
-    desc: "Create and push the next signed CalVer tag"
+    desc: 'Create and push the next signed CalVer tag'
     cmds:
       - |-
         set -euo pipefail
