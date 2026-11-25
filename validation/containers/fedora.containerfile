@@ -6,21 +6,24 @@ ARG USER_GID=1000
 ARG CHEZMOI_VERSION=2.72.0
 
 ENV TZ=America/La_Paz
+
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 RUN dnf install -y \
-    --setopt=install_weak_deps=False \
-    --setopt=tsflags=nodocs \
-    git-core \
-    zsh \
+        --setopt=install_weak_deps=False \
+        --setopt=tsflags=nodocs \
+        git-core \
+        kitty-terminfo \
+        zsh \
     && dnf clean all \
     && rm -rf /var/cache/dnf /var/lib/dnf/history* /var/tmp/*
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -fsSL \
-    "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" \
+        "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" \
     | tar -xz -C /usr/local/bin chezmoi
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -G wheel -s /bin/zsh \
     && echo '%wheel ALL=(ALL) NOPASSWD:ALL' \
-    > /etc/sudoers.d/wheel-nopasswd \
+        > /etc/sudoers.d/wheel-nopasswd \
     && chmod 0440 /etc/sudoers.d/wheel-nopasswd \
     && mkdir -p /home/$USERNAME/.local/share/chezmoi \
     && chown -R $USERNAME:$USERNAME /home/$USERNAME/.local

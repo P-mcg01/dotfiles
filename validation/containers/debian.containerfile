@@ -6,22 +6,26 @@ ARG USER_GID=1000
 ARG CHEZMOI_VERSION=2.72.0
 
 ENV TZ=America/La_Paz
+
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    git-core \
-    curl \
-    zsh \
-    ca-certificates \
-    apt-transport-https \
-    sudo
+        git-core \
+        curl \
+        zsh \
+        ca-certificates \
+        apt-transport-https \
+        kitty-terminfo \
+        sudo \
+    && rm -rf /var/lib/apt/lists/*
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -fsSL \
-    "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" \
+        "https://github.com/twpayne/chezmoi/releases/download/v${CHEZMOI_VERSION}/chezmoi_${CHEZMOI_VERSION}_linux_amd64.tar.gz" \
     | tar -xz -C /usr/local/bin chezmoi
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -G sudo -s /bin/zsh \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' \
-    > /etc/sudoers.d/sudo-nopasswd \
+        > /etc/sudoers.d/sudo-nopasswd \
     && chmod 0440 /etc/sudoers.d/sudo-nopasswd \
     && mkdir -p /home/$USERNAME/.local/share/chezmoi \
     && chown -R $USERNAME:$USERNAME /home/$USERNAME/.local

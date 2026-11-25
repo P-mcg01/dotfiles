@@ -1,6 +1,6 @@
 debian:
-  - validation/containers/debian
+  - validation/containers/debian.containerfile
   - .github/workflows/containers.yml
 fedora:
-  - validation/containers/fedora
+  - validation/containers/fedora.containerfile
   - .github/workflows/containers.yml
