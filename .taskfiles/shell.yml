@@ -1,3 +1,4 @@
+# $schema=https://taskfile.dev/schema.json
 version: '3'
 
 tasks:
@@ -9,6 +10,8 @@ tasks:
 
   fmt:
     desc: 'Format bash scripts with shfmt'
+    status:
+      - task sh:check
     cmds:
       - shfmt -w scripts/
       - shfmt -w ./home/.chezmoiscripts

@@ -1,8 +1,11 @@
+# $schema=https://taskfile.dev/schema.json
 version: '3'
 
 tasks:
   fmt:
     desc: 'Format github actions workflows with yamlfmt'
+    status:
+      - task gh:fmt-check
     cmds:
       - yamlfmt .github/workflows/
 

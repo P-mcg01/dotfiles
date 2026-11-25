@@ -1,3 +1,4 @@
+# $schema=https://taskfile.dev/schema.json
 version: '3'
 
 tasks:
@@ -23,6 +24,10 @@ tasks:
 
   release-tag:
     desc: 'Create and push the next signed CalVer tag'
+    vars:
+      VERSION:
+        sh: task dev:next-version
+    prompt: 'Are you sure you want to create and push {{.VERSION}}?'
     cmds:
       - |-
         set -euo pipefail
@@ -31,4 +36,3 @@ tasks:
         git tag -s "$version" -m "Release $version"
         git push origin tag "$version"
         echo "Tag $version pushed"
-

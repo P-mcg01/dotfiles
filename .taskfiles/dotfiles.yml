@@ -1,3 +1,4 @@
+# $schema=https://taskfile.dev/schema.json
 version: '3'
 
 vars:
@@ -36,6 +37,8 @@ tasks:
   #
   fmt:zsh:
     desc: 'Format ZSH files with shfmt (except templates)'
+    status:
+      - test -z "$(shfmt -l -ln=zsh {{join " " .ZSH_FILES}})"
     cmds:
       - shfmt -w -ln=zsh {{join " " .ZSH_FILES}}
 
@@ -52,6 +55,8 @@ tasks:
   #
   fmt:kdl:
     desc: 'Format KDL files with kdlfmt'
+    status:
+      - task check:kdl
     cmds:
       - kdlfmt format ./home
 
@@ -67,6 +72,8 @@ tasks:
     desc: 'Format TOML files with taplo'
     env:
       RUST_LOG: warn
+    status:
+      - task check:toml
     cmds:
       - taplo fmt
 
@@ -82,6 +89,8 @@ tasks:
   #
   fmt:mise:
     desc: 'Format MISE config with mise'
+    status:
+      - task check:mise
     cmds:
       - mise fmt --cd ./home/dot_config
 
@@ -95,6 +104,8 @@ tasks:
   #
   fmt:yaml:
     desc: 'Format YAML files with yamlfmt'
+    status:
+      - task check:yaml
     cmds:
       - yamlfmt -conf ./home/dot_config/yamlfmt/yamlfmt.yml ./home
 
@@ -108,6 +119,8 @@ tasks:
   #
   fmt:lua:
     desc: 'Format LUA files with styLua'
+    status:
+      - task check:lua
     cmds:
       - stylua ./home
 
