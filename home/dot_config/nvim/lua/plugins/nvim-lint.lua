@@ -13,6 +13,10 @@ return {
       sh = { "shellcheck" },
       bash = { "shellcheck" },
       dockerfile = { "hadolint" },
+      ["yaml.ansible"] = {
+        "yamllint",
+        "ansible_lint",
+      },
     }
 
     --[[

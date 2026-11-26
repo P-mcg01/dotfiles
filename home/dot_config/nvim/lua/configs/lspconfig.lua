@@ -1,6 +1,10 @@
 require("nvchad.configs.lspconfig").defaults()
 
 vim.lsp.config("yamlls", {
+  filetypes = {
+    "yaml",
+    "yaml.ansible",
+  },
   settings = {
     redhat = { telemetry = { enabled = false } },
     yaml = {
@@ -36,12 +40,33 @@ vim.lsp.config("dockerls", {
   end,
 })
 
+vim.lsp.config("ansiblels", {
+  ansible = {
+    ansible = {
+      path = "ansible",
+    },
+    executionEnvironment = {
+      enabled = false,
+    },
+    python = {
+      interpreterPath = "python3",
+    },
+    validation = {
+      enabled = true,
+      lint = {
+        enabled = false,
+      },
+    },
+  },
+})
+
 local servers = {
   "html",
   "cssls",
   "yamlls",
   "gh_actions_ls",
   "bashls",
+  "ansiblels",
 }
 
 vim.lsp.enable(servers)

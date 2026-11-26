@@ -1,4 +1,7 @@
 [tools]
+# Editors
+neovim = "0.12.6"
+
 # Cloud & CLI Utilities
 aws-cli = "2.36.40"
 gh = "latest"

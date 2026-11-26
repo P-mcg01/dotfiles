@@ -44,6 +44,8 @@ return {
         "hadolint",
         "dockerfile-language-server",
         "dockerfmt",
+        "ansiblels",
+        "ansible-lint",
       },
     },
   },
