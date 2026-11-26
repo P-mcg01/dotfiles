@@ -46,6 +46,8 @@ return {
         "dockerfmt",
         "ansiblels",
         "ansible-lint",
+        "basedpyright",
+        "ruff",
       },
     },
   },

@@ -60,6 +60,25 @@ vim.lsp.config("ansiblels", {
   },
 })
 
+vim.lsp.config("basedpyright", {
+  settings = {
+    basedpyright = {
+      analysis = {
+        autoSearchPaths = true,
+        diagnosticMode = "openFilesOnly",
+        typeCheckingMode = "recommended",
+      },
+      disableTaggedHints = true,
+    },
+  },
+})
+
+vim.lsp.config("ruff", {
+  on_attach = function(client)
+    client.server_capabilities.hoverProvider = false
+  end,
+})
+
 local servers = {
   "html",
   "cssls",
@@ -67,6 +86,8 @@ local servers = {
   "gh_actions_ls",
   "bashls",
   "ansiblels",
+  "basedpyright",
+  "ruff",
 }
 
 vim.lsp.enable(servers)

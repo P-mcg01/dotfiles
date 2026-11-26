@@ -9,6 +9,7 @@ local options = {
     sh = { "shfmt" },
     bash = { "shfmt" },
     dockerfile = { "dockerfmt" },
+    python = { "ruff_format" },
   },
   format_on_save = {
     timeout_ms = 500,
